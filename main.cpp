@@ -227,8 +227,44 @@ public:
     }
 
 /* Нахождение обратной матрицы */
-    Matrix operator!() {
+    Matrix<double> operator!() {
+        if (this->rows != this->cols) {
+            throw invalid_argument("Rows should match columns");
+        }
+        int n = this->rows;
+        vector<vector<double>> extendedMatrix(n, vector<double>(n * 2, 0.0));
+        for (int i = 0; i < n; ++i) {
+            extendedMatrix[i][i + n] = 1.0;
+            for (int j = 0; j < n; ++j) {
+                extendedMatrix[i][j] = this->data[i][j];
+            }
+        }
         
+        for (int i = 0; i < n; ++i) {
+            if (extendedMatrix[i][i] == 0) {
+                throw invalid_argument("Reverse matrix does not exist");
+            }
+            double div = extendedMatrix[i][i];
+            for (int j = 0; j < 2 * n; ++j) {
+                extendedMatrix[i][j] /= div;
+            }
+            for (int k = 0; k < n; ++k) {
+                if (k != i) {
+                    double f = extendedMatrix[k][i];
+                    for (int j = 0; j < 2 * n; ++j) {
+                        extendedMatrix[k][j] -= extendedMatrix[i][j] * f;
+                    }
+                }
+            }
+        }
+        
+        vector<vector<double>> inverse(n, vector<double>(n, 0));
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                inverse[i][j] = extendedMatrix[i][j + n];
+            }
+        }
+        return Matrix<double>(inverse);
     }
 
     ~Matrix() {
@@ -238,14 +274,17 @@ public:
 int main() {
     //clearConsole();
     Matrix<int> M("matrixInput.txt");
-    Matrix<int> NN({{9, 8, 7}, {6, 5, 4}, {3, 2, 1}});
+    Matrix<int> NN({{5, 3, 2}, {5, 4, 1}, {7, 2, 1}});
     Matrix<int> N = NN;
     //cout << M + N;
     //cout << M - N;
     //cout << N * 3;
     //cout << N * M;
-    cout << Matrix<int>::zeroMatrix(2, 2);
-    cout << Matrix<int>::unitMatrix(3);
+    //cout << Matrix<int>::zeroMatrix(2, 2);
+    //cout << Matrix<int>::unitMatrix(3);
+    Matrix<int> inv({{2, 3}, {1, 4}});
+    //cout << !inv;
+    cout << !NN;
 /*
 // Матрица с указанными размерами
     Matrix<int> A(2,2);
