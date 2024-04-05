@@ -214,6 +214,18 @@ public:
         this->data = other.data;
     }
 
+/* Статические методы для единичных и нулевыех матриц */
+    static Matrix zeroMatrix(int rows, int cols) {
+        return Matrix(vector<vector<T>> (rows, vector<T>(cols, 0)));
+    }
+    static Matrix unitMatrix(int rows) {
+        vector<vector<T>> result = vector<vector<T>>(rows, vector<T>(rows, 0));
+        for (int i = 0; i < rows; ++i) {
+            result[i][i] = 1;
+        }
+        return Matrix(result);
+    }
+
     ~Matrix() {
     }
 };
@@ -226,7 +238,9 @@ int main() {
     //cout << M + N;
     //cout << M - N;
     //cout << N * 3;
-    cout << N * M;
+    //cout << N * M;
+    cout << Matrix<int>::zeroMatrix(2, 2);
+    cout << Matrix<int>::unitMatrix(3);
 /*
 // Матрица с указанными размерами
     Matrix<int> A(2,2);
