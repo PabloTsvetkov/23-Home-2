@@ -182,6 +182,31 @@ public:
         return Matrix(result);
     }
 
+/* Перегрузка * */
+    Matrix operator* (int scalar) {
+        vector<vector<T>> result = data;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result[i][j] *= scalar;
+            }
+        }
+        return Matrix(result);
+    }
+    Matrix operator* (Matrix &other) {
+        if (this->cols != other.rows) {
+            throw invalid_argument("Number of columns of the first matrix should match with number of rows of the second matrix");
+        }
+        vector<vector<T>> result(this->rows, vector<T>(other.cols, 0));
+        for (int i = 0; i < this->rows; ++i) {
+            for (int j = 0; j < other.cols; ++j) {
+                for (int k = 0; k < this->cols; ++k) {
+                    result[i][j] += this->data[i][k] * other.data[k][j];
+                }
+            }
+        }
+        return Matrix(result);
+    }
+
 
     ~Matrix() {
     }
@@ -190,9 +215,11 @@ public:
 int main() {
     //clearConsole();
     Matrix<int> M("matrixInput.txt");
-    Matrix<int> N(3, 3, 1);
-    cout << M + N;
-    cout << M - N;
+    Matrix<int> N({{9, 8, 7}, {6, 5, 4}, {3, 2, 1}});
+    //cout << M + N;
+    //cout << M - N;
+    //cout << N * 3;
+    cout << N * M;
 /*
 // Матрица с указанными размерами
     Matrix<int> A(2,2);
