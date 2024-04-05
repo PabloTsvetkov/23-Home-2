@@ -226,6 +226,11 @@ public:
         return Matrix(result);
     }
 
+/* Нахождение обратной матрицы */
+    Matrix operator!() {
+        
+    }
+
     ~Matrix() {
     }
 };
