@@ -207,6 +207,12 @@ public:
         return Matrix(result);
     }
 
+/* Перегрузка присваивания */
+    void operator= (Matrix &other) {
+        this->rows = other.rows;
+        this->cols = other.cols;
+        this->data = other.data;
+    }
 
     ~Matrix() {
     }
@@ -215,7 +221,8 @@ public:
 int main() {
     //clearConsole();
     Matrix<int> M("matrixInput.txt");
-    Matrix<int> N({{9, 8, 7}, {6, 5, 4}, {3, 2, 1}});
+    Matrix<int> NN({{9, 8, 7}, {6, 5, 4}, {3, 2, 1}});
+    Matrix<int> N = NN;
     //cout << M + N;
     //cout << M - N;
     //cout << N * 3;
