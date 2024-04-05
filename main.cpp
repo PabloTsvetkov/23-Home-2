@@ -35,15 +35,13 @@ private:
     }
 public:
 // Конструктор для считывания матрицы без размеров
-    Matrix() {
-        inputDataNoSizes();
+    Matrix() : rows(0), cols(0) {
     }
 // Конструктор для считывания матрицы с размерами
     Matrix(int rows, int cols) {
         this->rows = rows;
         this->cols = cols;
         data = vector<vector<T>>(rows, vector<T>(cols));
-        inputDataWithSizes();
     }
 // Конструктор для считывания матрицы из файла
     Matrix(string fileName) {
@@ -51,6 +49,7 @@ public:
         fileInput >> rows >> cols;
         if (!fileInput.is_open()) {
             cout << "There is no such a file in that directory" << endl;
+            throw invalid_argument(":/");
         }
         else {
             data = vector<vector<T>>(rows, vector<T>(cols));
@@ -61,6 +60,16 @@ public:
             }
         }
         fileInput.close();
+    }
+// Метод для считвания матрицы
+    void inputMatrix() {
+        if (rows == cols && rows == 0) {
+            inputDataNoSizes();
+        }
+        else {
+            inputDataWithSizes();
+        }
+        return ;
     }
 
 // Вывод матрицы в файл
@@ -104,12 +113,30 @@ public:
             matrix.data = vector<vector<T>>(matrix.rows, vector<T>(matrix.cols));
         }
         cout << "Enter all elements of matrix ( " << matrix.rows * matrix.cols << " elements ):\n";
-        for (auto row : matrix.data) {
-            for (auto elem : row) {
-                is >> elem;
+        for (int i = 0; i < matrix.rows; ++i) {
+            for (int j = 0; j < matrix.cols; ++j) {
+                is >> matrix.data[i][j];
             }
         }
         return is;
+    }
+// Перегрузка <<>> для файла
+    friend ofstream& operator<<(ofstream& ofs, Matrix &matrix) {
+        for (int i = 0; i < matrix.rows; ++i) {
+            for (int j = 0; j < matrix.cols; ++j) {
+                ofs << matrix.data[i][j] << " ";
+            }
+            ofs << "\n";
+        }
+    }
+    friend ifstream& operator>>(ifstream& ifs, Matrix &matrix) {
+        ifs >> matrix.rows >> matrix.cols;
+        matrix.data = vector<vector<T>>(matrix.rows, vector<T>(matrix.cols));
+        for (int i = 0; i < matrix.rows; ++i) {
+            for (int j = 0; j < matrix.cols; ++j) {
+                ifs >> matrix.data[i][j];
+            }
+        }
     }
 
 
@@ -128,14 +155,27 @@ int main() {
 // Матрица без указанных размеров
     Matrix<int> B;
     B.printMatrixToConsole();
-
 // Матрица для считывания из файла
     Matrix<int> C("matrixInput.txt");
     C.printMatrixToConsole();
     C.printMatrixToFile("matrixOutput.txt");
-*/
+// Матрица считываемая из консоли с помощью >>
     Matrix<int> D;
     cin >> D;
+    cout << D;
+
+// Матрица и файлы и <<>>
+    Matrix<int> E(2, 2);
+    ofstream fileOut("matrixOutput.txt");
+    ifstream fileIn("matrixInput.txt");
+    if (fileIn.is_open() == false) {
+        throw invalid_argument("File not found");
+    }
+    fileIn >> E;
+    fileOut << E;
+
+*/
+
 
     return 0;
 }
