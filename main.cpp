@@ -14,7 +14,7 @@ template<typename T> class Matrix {
 private:
     vector<vector<T>> data;
     int rows, cols;
-
+/* Вводы матриц */
 // Ввод матрицы с заданными размерами
     void inputDataWithSizes() {
         cout << "Enter all elements of matrix ( " << rows * cols << " elements ):\n";
@@ -33,7 +33,9 @@ private:
         data = vector<vector<T>>(rows, vector<T>(cols));
         inputDataWithSizes();
     }
+
 public:
+/* Конструкторы */
 // Конструктор для считывания матрицы без размеров
     Matrix() : rows(0), cols(0) {
     }
@@ -42,6 +44,18 @@ public:
         this->rows = rows;
         this->cols = cols;
         data = vector<vector<T>>(rows, vector<T>(cols));
+    }
+// Конструктор для матрицы с одинаковыми значениями
+    Matrix(int rows, int cols, T value) {
+        this->rows = rows;
+        this->cols = cols;
+        data = vector<vector<T>>(rows, vector<T>(cols, value));
+    }
+// Конструктор по вектору
+    Matrix(vector<vector<T>> matrix) {
+        data = matrix;
+        rows = data.size();
+        cols = data[0].size();
     }
 // Конструктор для считывания матрицы из файла
     Matrix(string fileName) {
@@ -61,6 +75,8 @@ public:
         }
         fileInput.close();
     }
+
+/* Метод для считвания матрицы */
 // Метод для считвания матрицы
     void inputMatrix() {
         if (rows == cols && rows == 0) {
@@ -72,6 +88,7 @@ public:
         return ;
     }
 
+/* Методы для вывода матриц */
 // Вывод матрицы в файл
     void printMatrixToFile(string fileOutName) {
         ofstream fileOut(fileOutName);
@@ -83,7 +100,6 @@ public:
         }
         fileOut.close();
     }
-
 // Вывод матрицы в консоль
     void printMatrixToConsole() {
         for (int i = 0; i < rows; ++i) {
@@ -94,6 +110,7 @@ public:
         }
     }
 
+/* Перегрузка <<>> */
 // Перегрузка <<>> для консоли
     friend ostream& operator<<(ostream& os, const Matrix &matrix) {
         for (auto row : matrix.data) {
@@ -139,7 +156,31 @@ public:
         }
     }
 
-
+/* Перегрузка + и - */
+    Matrix operator+ (Matrix &other) {
+        if (this->rows != other.rows || this->cols != other.cols) {
+            throw invalid_argument("Sizes of matrixes do not match");
+        }
+        vector<vector<T>> result = data;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result[i][j] += other.data[i][j];
+            }
+        }
+        return Matrix(result);
+    }
+    Matrix operator- (Matrix &other) {
+        if (this->rows != other.rows || this->cols != other.cols) {
+            throw invalid_argument("Sizes of matrixes do not match");
+        }
+        vector<vector<T>> result = data;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                result[i][j] -= other.data[i][j];
+            }
+        }
+        return Matrix(result);
+    }
 
 
     ~Matrix() {
@@ -148,6 +189,10 @@ public:
 
 int main() {
     //clearConsole();
+    Matrix<int> M("matrixInput.txt");
+    Matrix<int> N(3, 3, 1);
+    cout << M + N;
+    cout << M - N;
 /*
 // Матрица с указанными размерами
     Matrix<int> A(2,2);
@@ -159,11 +204,10 @@ int main() {
     Matrix<int> C("matrixInput.txt");
     C.printMatrixToConsole();
     C.printMatrixToFile("matrixOutput.txt");
-// Матрица считываемая из консоли с помощью >>
+// Матрица и консоль и <<>>
     Matrix<int> D;
     cin >> D;
     cout << D;
-
 // Матрица и файлы и <<>>
     Matrix<int> E(2, 2);
     ofstream fileOut("matrixOutput.txt");
@@ -173,7 +217,6 @@ int main() {
     }
     fileIn >> E;
     fileOut << E;
-
 */
 
 
